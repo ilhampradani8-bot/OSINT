@@ -1,0 +1,21 @@
+{
+  "name": "my-osint-retro95",
+  "version": "1.0.0",
+  "description": "Asian & Indonesian OSINT Suite with Classic Windows 95/98 UI (Astro Edition)",
+  "scripts": {
+    "dev": "./start.sh",
+    "dev:astro": "cd astro-ui && npm run dev",
+    "dev:backend": "python3 backend/server.py 8080"
+  },
+  "keywords": [
+    "osint",
+    "astro",
+    "windows95",
+    "indonesia",
+    "asia",
+    "nik-parser",
+    "holehe"
+  ],
+  "author": "MY-OSINT",
+  "license": "MIT"
+}

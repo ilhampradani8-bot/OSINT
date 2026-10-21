@@ -1,0 +1,1692 @@
+---
+// MY-OSINT 95 (Astro Real-time Edition)
+// Integrasi Maltego Graph Mapping, SpiderFoot Live Stream, Sherlock Real-time & Epieos
+import '../styles/windows95.css';
+---
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY-OSINT 95 (Real-Time Edition) - Maltego Graph & SpiderFoot Stream</title>
+</head>
+<body>
+
+  <!-- Desktop Environment -->
+  <div id="desktop">
+
+    <!-- Main Workspace Window (Full Width Windows 95) -->
+    <div id="workspace-window" style="width:100%; flex:1;">
+      <!-- Title Bar -->
+      <div class="window-titlebar">
+        <div class="window-titlebar-title">
+          <span id="window-icon">🕵️</span>
+          <span id="window-title">MY-OSINT 95 (Pusat Penyelidikan Intelijen & Basis Data Daring RI)</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn" title="Minimize">_</button>
+          <button class="win-btn" title="Maximize">□</button>
+          <button class="win-btn" title="Tutup" style="color:#800000;">×</button>
+        </div>
+      </div>
+
+      <!-- Menubar Retro with Page Switcher -->
+      <div class="window-menubar" style="display:flex; align-items:center; gap:8px;">
+        <span class="menu-item active" id="nav-btn-investigation" style="font-weight:bold; color:#00007c; background:#e0e0e0; border:1px inset #888;">
+          🎯 <u>P</u>usat Penyelidikan OSINT
+        </span>
+        <span class="menu-item" id="nav-btn-logs" style="font-weight:bold;">
+          🛡️ <u>L</u>og Keamanan, Error & SQL
+        </span>
+        <span class="menu-item" id="menu-ekspor"><u>E</u>kspor Dossier</span>
+        <span class="menu-item" id="menu-sound"><u>S</u>uara: <b id="sound-status">AKTIF</b></span>
+        <span style="margin-left:auto; font-size:11.5px; color:#000080; font-weight:bold; display:flex; align-items:center; gap:4px;">
+          💽 <span class="status-indicator-green"></span>SQLite3 Local DB: AKTIF
+        </span>
+      </div>
+
+      <!-- Content Area -->
+      <div class="window-content-area">
+
+        <!-- ============================================================
+             PAGE 0: DOSSIER INTELIJEN REAL-TIME & PETA RELASI
+             ============================================================ -->
+        <div id="page-dashboard" class="page-view active">
+          <!-- Target Search Bar -->
+          <div class="group-box">
+            <div class="group-box-title">Pusat Penambangan Intelijen & Dossier Spesifik (Multi-Parameter Target Recon)</div>
+            <p style="margin-bottom:8px; font-size:12.5px; line-height:1.5; color:#333;">
+              Masukkan parameter identitas target di bawah ini (<strong>bisa diisi 1 saja atau diisi beberapa/semuanya untuk mempersempit investigasi secara spesifik</strong>). Jika data 404/tidak ada, sistem akan jujur menampilkan "Tidak Ditemukan / 404", jika koneksi server/WAF error akan ditampilkan status riilnya, dan jika terdata akan dimunculkan NIM, Masked NIK, dan operator terkait.
+            </p>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; margin-bottom:8px; background:#f4f4f4; border:1px solid #aaa; padding:8px;">
+              <div>
+                <label for="realtime-name" style="font-size:11.5px; font-weight:bold; display:block; margin-bottom:2px;">👤 Nama Lengkap Target:</label>
+                <input type="text" id="realtime-name" placeholder="Contoh: Ilham Pradani" style="width:100%; box-sizing:border-box;">
+              </div>
+              <div>
+                <label for="realtime-location" style="font-size:11.5px; font-weight:bold; display:block; margin-bottom:2px;">📍 Lokasi / Kota / Provinsi:</label>
+                <input type="text" id="realtime-location" placeholder="Contoh: Surabaya / Jawa Timur / Jakarta" style="width:100%; box-sizing:border-box;">
+              </div>
+              <div>
+                <label for="realtime-address" style="font-size:11.5px; font-weight:bold; display:block; margin-bottom:2px;">🏠 Alamat / Kelurahan / Jalan:</label>
+                <input type="text" id="realtime-address" placeholder="Contoh: Wonokromo / Gubeng" style="width:100%; box-sizing:border-box;">
+              </div>
+              <div>
+                <label for="realtime-phone" style="font-size:11.5px; font-weight:bold; display:block; margin-bottom:2px;">📱 Nomor HP / WhatsApp:</label>
+                <input type="text" id="realtime-phone" placeholder="Contoh: 081288889999" style="width:100%; box-sizing:border-box;">
+              </div>
+              <div>
+                <label for="realtime-email" style="font-size:11.5px; font-weight:bold; display:block; margin-bottom:2px;">📧 Alamat Email / Akun:</label>
+                <input type="text" id="realtime-email" placeholder="Contoh: ilham@gmail.com" style="width:100%; box-sizing:border-box;">
+              </div>
+            </div>
+
+            <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+              <button class="btn btn-primary" id="btn-start-stream" style="font-weight:bold; padding:4px 14px !important;">
+                ⚡ Mulai Penambangan Spesifik Multi-Entitas
+              </button>
+              <button class="btn" id="btn-sample-specific">
+                🎯 Muat Contoh: Ilham Pradani (Surabaya + No HP)
+              </button>
+              <button class="btn" id="btn-clear-target-inputs">
+                🧹 Kosongkan Form
+              </button>
+            </div>
+
+            <div id="stream-status-bar" style="display:none; padding:6px 10px; background:#e0f2fe; border:1px solid #0284c7; font-size:12.5px; margin-top:8px;">
+              <span><strong>Status:</strong> <span id="stream-status-text">Menghubungkan ke SSE stream...</span></span>
+              <span style="margin-left:14px;"><strong>Data Dossier Ditemukan:</strong> <span id="stream-node-count">0</span></span>
+              <span style="margin-left:14px;"><strong>Relasi Jaringan:</strong> <span id="stream-edge-count">0</span></span>
+            </div>
+          </div>
+
+          <!-- View Mode Switcher -->
+          <div class="view-mode-tabs" style="margin-top:6px;">
+            <button class="view-tab-btn active" id="tab-btn-cards">
+              <span>🗂️</span> Tampilan Kartu Multi-Profil (Data Diri & Identitas)
+            </button>
+            <button class="view-tab-btn" id="tab-btn-table">
+              <span>📋</span> Tampilan Tabel Temuan Data (Sumber, Data Ditemukan, Status)
+            </button>
+            <span style="margin-left:auto; font-size:11.5px; color:#555; align-self:center;">
+              💡 <em>Hanya data aktif (200 OK / terdata) yang ditampilkan. Seluruh 404 disaring otomatis.</em>
+            </span>
+          </div>
+
+          <!-- VIEW 1: KARTU MULTI-PROFIL & IDENTITAS DITEMUKAN (PRIMARY) -->
+          <div id="view-profile-cards" style="display:flex; flex-direction:column; gap:8px;">
+            <div class="group-box" style="margin-top:0; padding:8px;">
+              <div class="group-box-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>🗂️ Galeri Kartu Profil & Identitas Ditemukan (1 Nama Multi-Profil Berbeda)</span>
+                <span id="profile-card-total-badge" class="badge-tag badge-info" style="font-size:11px;">0 Profil Daring</span>
+              </div>
+              <p style="margin:4px 0 8px 0; font-size:12px; color:#444;">
+                ⚡ Menampilkan seluruh profil berbeda yang ditemukan secara daring (PDDikti Kemdiktisaintek, Akun Terverifikasi, Indeks Wilayah). Satu nama dapat memiliki banyak entitas berbeda di berbagai institusi.
+              </p>
+              <div id="master-profile-cards-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap:10px; max-height: calc(100vh - 330px); min-height: 480px; overflow-y:auto; padding:8px; background:#e0e0e0; border:2px inset #ffffff;">
+                <div id="profile-cards-empty-state" style="grid-column: 1 / -1; text-align:center; padding:40px 10px; color:#666;">
+                  Belum ada profil aktif. Ketik nama atau parameter target di atas, lalu tekan <strong>⚡ Mulai Penambangan Spesifik Multi-Entitas</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 2: TABEL TEMUAN DATA DITEMUKAN (RINGKAS & BEBAS 404) -->
+          <div id="view-dossier-table" style="display:none; flex-direction:column; gap:8px;">
+            <div class="group-box" style="margin-top:0; padding:8px;">
+              <div class="group-box-title">Tabel Temuan Data Daring (Sumber, Data Ditemukan, Status Respon)</div>
+              <div class="excel-table-container" style="max-height: calc(100vh - 310px); min-height: 480px;">
+                <table class="excel-table" id="master-dossier-table">
+                  <thead>
+                    <tr>
+                      <th style="width:36px; text-align:center;">No</th>
+                      <th style="width:160px;">Sumber</th>
+                      <th>Data Ditemukan (ID / NIM / Judul / Akun / Nilai)</th>
+                      <th style="width:140px; text-align:center;">Status Link</th>
+                      <th style="width:170px; text-align:center;">Tautan & Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="master-dossier-tbody">
+                    <tr>
+                      <td colspan="5" style="text-align:center; padding:35px 10px; color:#666;">
+                        Belum ada data dossier aktif. Ketik target di atas dan jalankan penambangan.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             PAGE LOGS: SISTEM LOG KEAMANAN, ERROR WAF & DATABASE SQLITE
+             ============================================================ -->
+        <div id="page-logs" class="page-view">
+          <div class="group-box" style="margin-bottom:12px;">
+            <div class="group-box-title">🛡️ Sistem Pencatat Log Keamanan & Database SQL (SQLite)</div>
+            <p style="margin-bottom:10px; font-size:13px; line-height:1.5;">
+              Mencatat seluruh aktivitas penyelidikan secara otomatis ke basis data SQL lokal (<strong>backend/osint_archive.db</strong>). Setiap kegagalan koneksi, pemblokiran WAF Cloudflare (HTTP 403), error timeout, dan rekam jejak audit tersimpan permanen agar penelusuran identitas berikutnya tidak membebani server dan dapat dimuat langsung dari cache SQL.
+            </p>
+
+            <!-- Quick Metrics Header -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:12px;">
+              <div style="background:#fff; border:2px inset #fff; padding:10px;">
+                <div style="font-size:11px; color:#555; text-transform:uppercase;">Status Database SQL</div>
+                <div style="font-size:16px; font-weight:bold; color:#000080; margin-top:4px;">SQLite Aktif</div>
+                <div style="font-size:10px; color:#888;">osint_archive.db</div>
+              </div>
+              <div style="background:#fff; border:2px inset #fff; padding:10px;">
+                <div style="font-size:11px; color:#555; text-transform:uppercase;">Total Log Tersimpan</div>
+                <div style="font-size:16px; font-weight:bold; color:#333; margin-top:4px;" id="stat-log-count">0 Entri</div>
+                <div style="font-size:10px; color:#888;">Real-time sync</div>
+              </div>
+              <div style="background:#fff; border:2px inset #fff; padding:10px;">
+                <div style="font-size:11px; color:#555; text-transform:uppercase;">Blokir Cloudflare WAF</div>
+                <div style="font-size:16px; font-weight:bold; color:#a00; margin-top:4px;" id="stat-waf-count">0 Terdeteksi</div>
+                <div style="font-size:10px; color:#888;">HTTP 403 Forbidden</div>
+              </div>
+              <div style="background:#fff; border:2px inset #fff; padding:10px;">
+                <div style="font-size:11px; color:#555; text-transform:uppercase;">Error & Gangguan Jaringan</div>
+                <div style="font-size:16px; font-weight:bold; color:#c60; margin-top:4px;" id="stat-error-count">0 Event</div>
+                <div style="font-size:10px; color:#888;">Timeout / DNS Fail</div>
+              </div>
+            </div>
+
+            <!-- Action & Filter Bar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; background:#e0e0e0; padding:6px; border:1px solid #999;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <label for="log-level-filter" style="font-size:12px; font-weight:bold;">Filter Level:</label>
+                <select id="log-level-filter" style="font-size:12px; padding:2px 6px;">
+                  <option value="ALL">Semua Level Log</option>
+                  <option value="SECURITY_ALERT">🚨 SECURITY_ALERT (WAF / Blokir)</option>
+                  <option value="ERROR">❌ ERROR (Koneksi / Timeout)</option>
+                  <option value="WARN">⚠️ WARN (Peringatan)</option>
+                  <option value="AUDIT">📋 AUDIT (Aktivitas Pencarian)</option>
+                  <option value="INFO">ℹ️ INFO (Sistem)</option>
+                </select>
+              </div>
+
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-primary" id="btn-refresh-logs">🔄 Segarkan Log SQL</button>
+                <button class="btn" id="btn-clear-sql-logs">🗑️ Kosongkan Log</button>
+                <button class="btn" id="btn-export-logs">📥 Export JSON</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Log Table -->
+          <div class="group-box">
+            <div class="group-box-title">Tabel Rekam Jejak Keamanan & Error Sistem (SQLite)</div>
+            <div class="excel-table-container" style="max-height: calc(100vh - 350px); min-height: 380px;">
+              <table class="excel-table">
+                <thead>
+                  <tr>
+                    <th style="width:135px;">Timestamp & ID</th>
+                    <th style="width:130px;">Tingkat (Level)</th>
+                    <th style="width:140px;">Komponen</th>
+                    <th style="width:260px;">Peristiwa / Masalah</th>
+                    <th>Detail Teknis & Payload</th>
+                  </tr>
+                </thead>
+                <tbody id="security-logs-tbody">
+                  <tr>
+                    <td colspan="5" style="text-align:center; padding:30px; color:#666;">
+                      Memuat rekaman log dari database SQL...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dossier Intelijen Popup Modal (Windows 95) -->
+  <div id="dossier-modal" class="retro-modal-overlay">
+    <div class="retro-modal-window">
+      <!-- Titlebar -->
+      <div class="retro-modal-titlebar">
+        <div class="retro-modal-title">
+          <span>📁</span> <span id="modal-dossier-title">Dossier Intelijen: Target</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn" id="btn-close-modal" title="Tutup">×</button>
+        </div>
+      </div>
+
+      <!-- Menubar Modal -->
+      <div class="window-menubar">
+        <span class="menu-item" id="modal-menu-print"><u>C</u>etak Dossier</span>
+        <span class="menu-item" id="modal-menu-export"><u>E</u>xport JSON</span>
+        <span class="menu-item" id="modal-menu-wayback-all"><u>A</u>rsip Semua (Wayback)</span>
+      </div>
+
+      <!-- Content Area -->
+      <div class="retro-modal-content">
+        <!-- Profile Identity Card -->
+        <div class="dossier-card">
+          <div class="dossier-header-row">
+            <div class="dossier-avatar" id="modal-avatar">👤</div>
+            <div style="flex:1;">
+              <h3 id="modal-target-name" style="font-size:16px; color:#00007c; margin-bottom:4px;">Ilham Pradani</h3>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <span class="badge-tag badge-info" id="modal-badge-type">Entitas Individu</span>
+                <span class="badge-tag badge-success" id="modal-badge-status">Terverifikasi Real-Time</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Structured Demographics -->
+          <dl class="dossier-meta-grid">
+            <dt>Nama Lengkap / Alias:</dt>
+            <dd id="modal-meta-name">-</dd>
+
+            <dt>Nomor Telepon & Carrier:</dt>
+            <dd id="modal-meta-phone">-</dd>
+
+            <dt>Alamat / Wilayah / HLR:</dt>
+            <dd id="modal-meta-address">-</dd>
+
+            <dt>Indeks NIK Wilayah (Masked):</dt>
+            <dd id="modal-meta-nik" style="font-weight:bold; color:#000080;">-</dd>
+
+            <dt>Indeks NIM Terdaftar:</dt>
+            <dd id="modal-meta-nim" style="font-weight:bold; color:#065f46;">-</dd>
+
+            <dt>Email & Jejak Digital:</dt>
+            <dd id="modal-meta-email">-</dd>
+
+            <dt>Koneksi Registri RI:</dt>
+            <dd id="modal-meta-registries">-</dd>
+
+            <dt>Waktu Deteksi:</dt>
+            <dd id="modal-meta-timestamp">-</dd>
+          </dl>
+        </div>
+
+        <!-- Panduan & Cara Membuka Link 404 / Cache -->
+        <div class="cache-info-box">
+          <strong>💡 Solusi Investigasi: Cara Membuka Halaman yang 404 / Akun yang Sudah Terhapus:</strong><br>
+          Jika akun media sosial atau tautan target mengembalikan error <strong>404 Not Found</strong> (karena dihapus pemilik, dinonaktifkan, atau diganti nama):
+          <ul style="margin-left:20px; margin-top:4px;">
+            <li>Klik tombol <strong>🏛️ Wayback Machine</strong>: Memuat salinan snapshot halaman web dari server Internet Archive saat halaman tersebut masih aktif di masa lalu.</li>
+            <li>Klik tombol <strong>📦 Archive.today</strong>: Membuka mirror snapshot cadangan independen dari basis data arsip web global.</li>
+            <li>Klik tombol <strong>🔍 Google Search Cache</strong>: Mencari riwayat cache perayap teks yang tersimpan di Google search.</li>
+          </ul>
+        </div>
+
+        <!-- Discovered Accounts Table -->
+        <div class="group-box" style="margin-top:0;">
+          <div class="group-box-title">Daftar Akun Terdeteksi & Pemulihan Tautan Cache</div>
+          <div class="excel-table-container" style="max-height:220px;">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th>Platform / Layanan</th>
+                  <th>Kategori</th>
+                  <th>Nilai / Akun</th>
+                  <th>Tautan Langsung</th>
+                  <th>Pemulihan Arsip (Jika 404 / Terhapus)</th>
+                </tr>
+              </thead>
+              <tbody id="modal-accounts-tbody">
+                <tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section: Detail Basis Data & Registri Resmi Republik Indonesia -->
+        <div class="group-box" style="margin-top:0;">
+          <div class="group-box-title">Hasil Investigasi Registri Resmi RI: Temuan Langsung di Layar (Tanpa Direct Link Luar)</div>
+          <p style="font-size:12px; margin-bottom:8px; color:#333;">
+            Menampilkan 8 basis data resmi instansi pemerintah Republik Indonesia yang diintegrasikan, status verifikasi sistem, dan temuan intelijen langsung di dalam aplikasi:
+          </p>
+          <div class="excel-table-container" style="max-height:280px;">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th style="width:190px;">Instansi & Layanan RI</th>
+                  <th style="width:140px;">Status Verifikasi</th>
+                  <th>Hasil & Temuan Langsung di Layar</th>
+                  <th style="width:230px;">Data Ekstraksi Terverifikasi</th>
+                  <th style="width:160px; text-align:center;">Pratinjau Berkas In-App</th>
+                </tr>
+              </thead>
+              <tbody id="modal-gov-tbody">
+                <tr><td colspan="5" style="text-align:center; padding:15px;">Memuat data registri RI...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- In-App Sheet Document Viewer -->
+          <div id="inapp-sheet-container" style="display:none; margin-top:12px;">
+            <div class="inapp-doc-sheet">
+              <div class="inapp-doc-header">
+                <div>
+                  <h3 id="sheet-title" style="margin:0; font-size:14px; color:#000080;">BERKAS VERIFIKASI RESMI REPUBLIK INDONESIA</h3>
+                  <div id="sheet-subtitle" style="font-size:11px; color:#555;">Pangkalan Data Pemerintah Terbuka</div>
+                </div>
+                <div id="sheet-stamp" class="inapp-doc-stamp">TERVERIFIKASI SAH</div>
+              </div>
+              <div id="sheet-body" style="line-height:1.6; margin-bottom:12px;"></div>
+              <div style="border-top:1px dashed #aaa; padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:10px; color:#777;">MY-OSINT 95 Engine • Berkas Ditampilkan Langsung Tanpa Redirection</span>
+                <button class="btn" id="btn-close-sheet" style="padding:2px 8px !important;">Tutup Pratinjau Berkas</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="retro-modal-actions">
+        <button class="btn btn-primary" id="btn-export-dossier-json">💾 Download Laporan (.json)</button>
+        <button class="btn" id="btn-print-dossier">🖨️ Cetak Dokumen</button>
+        <button class="btn" id="btn-close-modal-bottom">Tutup Jendela [ESC]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Menu Popup -->
+  <div id="start-menu">
+    <div class="start-sidebar-strip">
+      WINDOWS 95
+    </div>
+    <div class="start-menu-items">
+      <div class="start-item" data-page="page-dashboard"><span>🎯</span> <strong>Pusat Penyelidikan OSINT</strong></div>
+      <div class="start-item" data-page="page-logs"><span>🛡️</span> <strong>Log Keamanan & SQL</strong></div>
+      <div class="start-item-divider"></div>
+      <div class="start-item" id="start-menu-export"><span>💾</span> Simpan Laporan ke Disk</div>
+      <div class="start-item" id="start-menu-about"><span>ℹ️</span> Tentang MY-OSINT 95</div>
+    </div>
+  </div>
+
+  <!-- Taskbar Bawah -->
+  <div id="taskbar">
+    <div class="taskbar-left">
+      <button class="btn start-button" id="start-btn">
+        <span style="color:#000080; font-size:14px;">⊞</span> Mulai
+      </button>
+      <div class="taskbar-divider"></div>
+      <div class="taskbar-window-tabs">
+        <div class="task-tab active" id="taskbar-tab">
+          <span id="taskbar-icon">🕸️</span>
+          <span id="taskbar-title">Maltego Live Graph</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="taskbar-right">
+      <div class="system-tray">
+        <span class="tray-icon" title="Audio Retro Aktif" id="tray-sound">🔊</span>
+        <span class="tray-icon" title="Koneksi Aman">🛡️</span>
+        <span id="clock" style="font-weight:600;">12:00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client-side Logic Script with Maltego Canvas Graph & SSE -->
+  <script is:inline>
+    // Audio Context & Retro Sound Synthesis
+    let audioCtx = null;
+    let soundEnabled = true;
+    const history = [];
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'hit') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(587.33, now);
+          osc.frequency.setValueAtTime(880.00, now + 0.08);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(554.37, now + 0.08);
+          osc.frequency.setValueAtTime(659.25, now + 0.16);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+      } catch (e) {}
+    }
+
+    // ============================================================
+    // MALTEGO RETRO CANVAS GRAPH ENGINE
+    // ============================================================
+    const graph = {
+      nodes: [],
+      edges: [],
+      draggedNode: null,
+      hoveredNode: null,
+      canvas: null,
+      ctx: null,
+
+      init(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+
+        this.canvas.addEventListener('mousedown', (e) => this.onMouseDown(e));
+        this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
+        window.addEventListener('mouseup', () => this.onMouseUp());
+        this.render();
+      },
+
+      resize() {
+        if (!this.canvas) return;
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+        this.render();
+      },
+
+      clear() {
+        this.nodes = [];
+        this.edges = [];
+        this.render();
+      },
+
+      addNode(node) {
+        if (this.nodes.some(n => n.id === node.id)) return;
+        if (!this.canvas) return;
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+        const count = this.nodes.length;
+        
+        let x = cx;
+        let y = cy;
+        if (count > 0) {
+          const angle = (count * 0.75) % (Math.PI * 2);
+          const radius = 130 + (count % 4) * 45;
+          x = cx + Math.cos(angle) * radius;
+          y = cy + Math.sin(angle) * radius;
+        }
+
+        this.nodes.push({
+          id: node.id,
+          label: node.label,
+          type: node.type,
+          icon: node.icon || '📌',
+          color: node.color || '#00007c',
+          url: node.url || null,
+          details: node.details || '',
+          x,
+          y,
+          radius: node.id === 'root' ? 30 : 22
+        });
+        this.render();
+      },
+
+      addEdge(edge) {
+        if (this.edges.some(e => e.from === edge.from && e.to === edge.to)) return;
+        this.edges.push(edge);
+        this.render();
+      },
+
+      getNodeAt(x, y) {
+        for (let i = this.nodes.length - 1; i >= 0; i--) {
+          const n = this.nodes[i];
+          const dist = Math.hypot(n.x - x, n.y - y);
+          if (dist <= n.radius + 4) return n;
+        }
+        return null;
+      },
+
+      onMouseDown(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const node = this.getNodeAt(x, y);
+        if (node) {
+          this.draggedNode = node;
+          this.startX = x;
+          this.startY = y;
+          this.canvas.style.cursor = 'grabbing';
+          playSound('click');
+        }
+      },
+
+      onMouseMove(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (this.draggedNode) {
+          this.draggedNode.x = x;
+          this.draggedNode.y = y;
+          this.render();
+          return;
+        }
+
+        const node = this.getNodeAt(x, y);
+        const tooltip = document.getElementById('node-tooltip');
+        if (node) {
+          this.canvas.style.cursor = 'pointer';
+          this.hoveredNode = node;
+          if (tooltip) {
+            tooltip.style.display = 'block';
+            tooltip.style.left = `${x + 15}px`;
+            tooltip.style.top = `${y + 15}px`;
+            tooltip.innerHTML = `<strong>${node.icon} ${node.label}</strong><br><small style="color:#333;">${node.details || (node.url ? `<a href="${node.url}" target="_blank" style="color:#000080;">${node.url}</a>` : 'Entitas Terkoneksi')}</small><br><span style="color:#000080; font-size:10px;">[Klik node untuk buka Dossier Popup]</span>`;
+          }
+        } else {
+          this.canvas.style.cursor = 'grab';
+          this.hoveredNode = null;
+          if (tooltip) tooltip.style.display = 'none';
+        }
+      },
+
+      onMouseUp(e) {
+        if (this.draggedNode && e) {
+          const rect = this.canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          if (Math.hypot(x - (this.startX || x), y - (this.startY || y)) < 6) {
+            openDossierModal();
+          }
+        }
+        this.draggedNode = null;
+        if (this.canvas) this.canvas.style.cursor = 'grab';
+      },
+
+      render() {
+        if (!this.ctx || !this.canvas) return;
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw Retro Grid Background
+        ctx.strokeStyle = '#f0f0f0';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < this.canvas.width; x += 25) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, this.canvas.height);
+          ctx.stroke();
+        }
+        for (let y = 0; y < this.canvas.height; y += 25) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(this.canvas.width, y);
+          ctx.stroke();
+        }
+
+        // Draw Edges (Maltego Dotted Connection Lines)
+        this.edges.forEach(edge => {
+          const fromNode = this.nodes.find(n => n.id === edge.from);
+          const toNode = this.nodes.find(n => n.id === edge.to);
+          if (fromNode && toNode) {
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = '#00007c';
+            ctx.lineWidth = 1.5;
+            ctx.moveTo(fromNode.x, fromNode.y);
+            ctx.lineTo(toNode.x, toNode.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Edge label
+            if (edge.label) {
+              const midX = (fromNode.x + toNode.x) / 2;
+              const midY = (fromNode.y + toNode.y) / 2;
+              ctx.font = '9.5px Tahoma, sans-serif';
+              ctx.fillStyle = '#666666';
+              ctx.fillText(edge.label, midX + 4, midY - 4);
+            }
+          }
+        });
+
+        // Draw Nodes
+        this.nodes.forEach(node => {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+          ctx.fillStyle = node.color;
+          ctx.fill();
+
+          // Retro 3D Bevel around node circle
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+
+          // Icon
+          ctx.font = node.id === 'root' ? '18px Arial' : '13px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(node.icon, node.x, node.y);
+
+          // Text Label Bawah Node
+          ctx.font = '11.5px Tahoma, sans-serif';
+          ctx.fillStyle = '#000000';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+
+          // Box background for text
+          const text = node.label.length > 20 ? node.label.slice(0, 18) + '...' : node.label;
+          const textWidth = ctx.measureText(text).width;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.fillRect(node.x - textWidth / 2 - 4, node.y + node.radius + 3, textWidth + 8, 16);
+
+          ctx.fillStyle = '#000000';
+          ctx.fillText(text, node.x, node.y + node.radius + 4);
+        });
+      }
+    };
+
+    // ============================================================
+    // SPIDERFOOT LIVE LOG TERMINAL
+    // ============================================================
+    function appendSpiderfootLog(log) {
+      const term = document.getElementById('spiderfoot-terminal');
+      if (!term) return;
+      const now = new Date().toLocaleTimeString('id-ID');
+      let color = '#00ff00';
+      if (log.level === 'HIT' || log.level === 'SUCCESS') color = '#ffff00';
+      if (log.level === 'ERROR') color = '#ff4444';
+      if (log.level === 'DISCOVERY') color = '#00ffff';
+
+      term.innerHTML += `<span style="color:#888;">[${now}]</span> <strong style="color:${color};">[${log.source || 'SpiderFoot'}]</strong> ${log.message}<br>`;
+      term.scrollTop = term.scrollHeight;
+    }
+
+    // ============================================================
+    // MASTER DOSSIER DATA STATE & TABLE CONTROLLER
+    // ============================================================
+    let masterDossier = {
+      query: '',
+      name: '',
+      phone: '-',
+      carrier: '-',
+      address: 'Indonesia / Asia',
+      email: '-',
+      registries: '-',
+      records: []
+    };
+
+
+
+    window._profileCardsList = [];
+
+    function addProfileCard(p) {
+      const grid = document.getElementById('master-profile-cards-grid');
+      const emptyState = document.getElementById('profile-cards-empty-state');
+      const badge = document.getElementById('profile-card-total-badge');
+      if (!grid) return;
+
+      if (emptyState) emptyState.style.display = 'none';
+      window._profileCardsList = window._profileCardsList || [];
+
+      // Hindari duplikasi persis
+      const cardKey = `${p.name}_${p.id_number || ''}_${p.source}`.toLowerCase();
+      if (window._profileCardsList.some(item => item._key === cardKey)) return;
+      p._key = cardKey;
+      window._profileCardsList.push(p);
+
+      if (badge) badge.innerText = `${window._profileCardsList.length} Profil Daring`;
+
+      const card = document.createElement('div');
+      card.className = 'candidate-card';
+      card.style.cssText = 'background:#ffffff; border:2px outset #ffffff; padding:8px 10px; font-size:12px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:1px 1px 3px rgba(0,0,0,0.2);';
+      card.innerHTML = `
+        <div>
+          <div style="font-weight:bold; color:#000080; font-size:12.5px; margin-bottom:4px; border-bottom:1px solid #ccc; padding-bottom:3px; display:flex; justify-content:space-between; align-items:center;">
+            <span>👤 ${p.name}</span>
+            <span style="font-size:10px; background:#065f46; color:#fff; padding:1px 5px; font-weight:bold;">LIVE 200</span>
+          </div>
+          <div style="margin-bottom:3px; font-size:11.5px;">
+            <span class="badge-tag badge-info" style="font-size:10.5px;">${p.icon || '📌'} ${p.source}</span>
+          </div>
+          ${p.id_number && p.id_number !== '-' ? `
+            <div style="font-size:11.5px; color:#111; margin-bottom:2px;">
+              <strong>ID / Identitas:</strong> <span style="font-family:monospace; font-weight:bold; color:#b22222;">${p.id_number}</span>
+            </div>
+          ` : ''}
+          ${p.org_location && p.org_location !== '-' ? `
+            <div style="font-size:11.5px; color:#333; margin-bottom:2px;">
+              <strong>Institusi / Wilayah:</strong> ${p.org_location}
+            </div>
+          ` : ''}
+          ${p.role_or_prodi && p.role_or_prodi !== '-' ? `
+            <div style="font-size:11px; color:#555; margin-bottom:4px;">
+              <strong>Detail / Spesifikasi:</strong> ${p.role_or_prodi}
+            </div>
+          ` : ''}
+        </div>
+        <div style="margin-top:6px; display:flex; gap:4px; flex-direction:column;">
+          <button class="btn btn-primary btn-select-card" style="width:100%; font-size:11px; padding:3px 4px !important; font-weight:bold;">
+            🎯 Tetapkan Sebagai Target Ini
+          </button>
+          <div style="display:flex; gap:3px;">
+            ${p.url ? `<a href="${p.url}" target="_blank" class="btn" style="flex:1; text-align:center; padding:2px 4px !important; font-size:11px;">🌐 Buka Asli</a>` : ''}
+            <button class="btn btn-detail-card" style="flex:1; font-size:11px; padding:2px 4px !important;">🔍 Detail Dossier</button>
+          </div>
+        </div>
+      `;
+
+      card.querySelector('.btn-select-card').addEventListener('click', () => {
+        playSound('click');
+        const elName = document.getElementById('realtime-name');
+        const elLoc = document.getElementById('realtime-location');
+        if (elName) elName.value = p.name;
+        if (elLoc && p.org_location) elLoc.value = p.org_location;
+        masterDossier.name = p.name;
+        if (p.org_location) masterDossier.address = p.org_location;
+        playSound('success');
+      });
+
+      card.querySelector('.btn-detail-card').addEventListener('click', () => {
+        playSound('click');
+        const foundIdx = masterDossier.records.findIndex(r => r.label === p.name || r.name === p.name);
+        openDossierModal(foundIdx >= 0 ? foundIdx : 0);
+      });
+
+      grid.appendChild(card);
+    }
+
+    function renderMasterDossierTable() {
+      const tbody = document.getElementById('master-dossier-tbody');
+      if (!tbody) return;
+
+      // Filter: Kalo 404 / nihil gausah tampil nambah2 baris!
+      const positiveRecords = (masterDossier.records || []).filter(rec => {
+        if (rec.found === false) return false;
+        const b = (rec.status_badge || '').toUpperCase();
+        if (b.includes('404') || b.includes('TIDAK') || b.includes('NIR') || b.includes('OFFLINE')) {
+          return false;
+        }
+        if (!rec.label && !rec.temuan_ringkas && (!rec.ekstraksi_data || rec.ekstraksi_data.length === 0)) {
+          return false;
+        }
+        return true;
+      });
+
+      if (positiveRecords.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:35px 10px; color:#666;">Belum ada temuan data aktif (HTTP 200 OK). Seluruh status 404 disaring otomatis agar tampilan bersih.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = positiveRecords.map((rec, idx) => {
+        const hasUrl = Boolean(rec.url);
+        const waybackUrl = hasUrl ? `https://web.archive.org/web/*/${rec.url}` : null;
+
+        const extraFields = (rec.ekstraksi_data && rec.ekstraksi_data.length > 0)
+          ? `<div style="margin-top:4px; display:flex; gap:4px; flex-wrap:wrap;">
+              ${rec.ekstraksi_data.map(d => `<span style="font-size:11px; background:#f1f5f9; border:1px solid #cbd5e1; padding:1px 5px;"><b>${d.label}:</b> <span style="color:#b22222; font-family:monospace;">${d.nilai}</span></span>`).join('')}
+             </div>`
+          : '';
+
+        const findingsText = (rec.temuan_ringkas && rec.temuan_ringkas !== '-')
+          ? `<div style="font-size:11.5px; color:#111; line-height:1.35; background:#f8fafc; border:1px solid #e2e8f0; padding:2px 6px; margin-top:2px;">${rec.temuan_ringkas}</div>`
+          : (rec.details && rec.details !== '-' ? `<small style="color:#444;">${rec.details}</small>` : '');
+
+        return `
+          <tr class="dossier-row" style="cursor:pointer;" data-idx="${masterDossier.records.indexOf(rec)}">
+            <td style="text-align:center; font-weight:600; color:#555;">${idx + 1}</td>
+            <td>
+              <span class="badge-tag badge-info" style="font-size:11px; font-weight:bold;">${rec.icon || '📌'} ${rec.source || rec.type || 'Platform'}</span>
+            </td>
+            <td>
+              <div style="font-weight:bold; color:#000080; font-size:12px;">${rec.label || rec.name}</div>
+              ${findingsText}
+              ${extraFields}
+            </td>
+            <td style="text-align:center;">
+              <span class="badge-tag badge-success" style="font-size:11px; font-weight:bold;">
+                ${rec.status_badge || 'HTTP 200 OK'}
+              </span>
+            </td>
+            <td style="text-align:center; white-space:nowrap;">
+              <div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">
+                ${hasUrl ? `<a href="${rec.url}" target="_blank" class="btn" style="padding:1px 6px !important; font-size:11px;">🌐 Buka Asli</a>` : ''}
+                ${hasUrl ? `<a href="${waybackUrl}" target="_blank" class="btn" style="padding:1px 6px !important; font-size:11px; color:#000080;" title="Buka arsip Wayback">🏛️ Cache</a>` : ''}
+                <button class="btn btn-primary btn-open-modal-row" data-idx="${masterDossier.records.indexOf(rec)}" style="padding:1px 6px !important; font-size:11px;">🔍 Detail</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.querySelectorAll('.dossier-row').forEach(row => {
+        row.addEventListener('click', (e) => {
+          if (e.target.tagName === 'A' || e.target.closest('a') || e.target.tagName === 'BUTTON') return;
+          const idx = parseInt(row.getAttribute('data-idx'), 10);
+          openDossierModal(idx);
+        });
+      });
+
+      tbody.querySelectorAll('.btn-open-modal-row').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(btn.getAttribute('data-idx'), 10);
+          openDossierModal(idx);
+        });
+      });
+    }
+
+    function showInAppSheet(reg, targetName) {
+      playSound('click');
+      const sheetContainer = document.getElementById('inapp-sheet-container');
+      if (!sheetContainer) return;
+
+      document.getElementById('sheet-title').innerText = `BERKAS VERIFIKASI RESMI: ${reg.nama_layanan.toUpperCase()}`;
+      document.getElementById('sheet-subtitle').innerText = `Instansi Penyelenggara: ${reg.instansi} | Klasifikasi: ${reg.kategori}`;
+      document.getElementById('sheet-stamp').innerText = reg.status_badge || 'TERVERIFIKASI SAH';
+      document.getElementById('sheet-stamp').style.color = reg.status_color || '#008000';
+      document.getElementById('sheet-stamp').style.borderColor = reg.status_color || '#008000';
+
+      const fieldsHtml = (reg.ekstraksi_data || []).map(f => `
+        <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding:4px 0; font-size:12px;">
+          <span style="color:#555; font-weight:600;">${f.label}:</span>
+          <span style="font-weight:bold; color:#000080;">${f.nilai}</span>
+        </div>
+      `).join('');
+
+      const paramBadges = (reg.parameter_terindex || []).map(p => `<span class="badge-tag" style="background:#f4f4f4; border:1px solid #aaa; margin:1px 2px; font-size:11px;">🔍 ${p}</span>`).join(' ');
+
+      document.getElementById('sheet-body').innerHTML = `
+        <div style="background:#f4f4f4; border:1px solid #ccc; padding:8px 12px; margin-bottom:10px;">
+          <strong style="color:#000080;">HASIL ANALISIS INTELIJEN TERBUKA RESMI (DIRECT FINDINGS):</strong><br>
+          <div style="font-size:12.5px; margin-top:4px; line-height:1.5; color:#111;">${reg.temuan_ringkas}</div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <strong style="color:#333;">RINCIAN DATA TEREKSTRAKSI DARI SISTEM INSTANSI:</strong>
+          <div style="margin-top:6px; background:#fff; border:1px solid #ddd; padding:8px 10px;">
+            ${fieldsHtml}
+          </div>
+        </div>
+        <div style="font-size:11.5px; color:#555; margin-top:8px;">
+          <strong>Parameter Resmi yang Di-Index oleh ${reg.instansi}:</strong><br>
+          <div style="margin-top:4px; line-height:1.5;">${paramBadges}</div>
+        </div>
+        <div style="font-size:11px; color:#666; margin-top:8px; border-top:1px dashed #ccc; padding-top:6px;">
+          <strong>Keterangan Fungsi Hukum:</strong> ${reg.deskripsi}
+        </div>
+      `;
+
+      sheetContainer.style.display = 'block';
+      sheetContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openDossierModal(selectedIdx = 0) {
+      playSound('click');
+      const modal = document.getElementById('dossier-modal');
+      if (!modal) return;
+
+      const rec = masterDossier.records[selectedIdx] || null;
+      const targetTitle = masterDossier.name || masterDossier.query || 'Target';
+
+      document.getElementById('modal-dossier-title').innerText = `Dossier Intelijen: ${targetTitle}`;
+      document.getElementById('modal-target-name').innerText = targetTitle;
+      document.getElementById('modal-meta-name').innerText = `${targetTitle} (Query: ${masterDossier.query})`;
+      document.getElementById('modal-meta-phone').innerText = masterDossier.phone;
+      document.getElementById('modal-meta-address').innerText = masterDossier.address;
+      document.getElementById('modal-meta-email').innerText = masterDossier.email;
+      document.getElementById('modal-meta-registries').innerText = masterDossier.registries;
+      document.getElementById('modal-meta-timestamp').innerText = new Date().toLocaleString('id-ID');
+
+      // Hide in-app sheet initially on modal open
+      const sheetContainer = document.getElementById('inapp-sheet-container');
+      if (sheetContainer) sheetContainer.style.display = 'none';
+
+      // Populate accounts in modal
+      const modalTbody = document.getElementById('modal-accounts-tbody');
+      if (modalTbody) {
+        if (!masterDossier.records || masterDossier.records.length === 0) {
+          modalTbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada entitas terdeteksi.</td></tr>`;
+        } else {
+          modalTbody.innerHTML = masterDossier.records.map((r, i) => `
+            <tr style="${i === selectedIdx ? 'background-color:#ffffd0;' : ''}">
+              <td><b>${r.source || r.type}</b></td>
+              <td><span class="badge-tag badge-info">${r.type || 'Akun'}</span></td>
+              <td><strong>${r.icon || '📌'} ${r.label}</strong></td>
+              <td>${r.url ? `<a href="${r.url}" target="_blank" class="btn" style="padding:1px 6px !important;">🌐 Buka Asli</a>` : '-'}</td>
+              <td>
+                ${r.url ? `
+                  <div style="display:flex; gap:4px;">
+                    <a href="https://web.archive.org/web/*/${r.url}" target="_blank" class="btn" style="padding:1px 6px !important; color:#000080;" title="Buka snapshot Wayback jika link terhapus / 404">🏛️ Wayback (404 Cache)</a>
+                    <a href="https://archive.today/${r.url}" target="_blank" class="btn" style="padding:1px 6px !important; color:#7c2d12;" title="Buka mirror archive">📦 Archive.is</a>
+                  </div>
+                ` : '<span style="color:#888;">Tidak ada link luar</span>'}
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // Populate Government Registries (RI) in modal with direct findings
+      const govTbody = document.getElementById('modal-gov-tbody');
+      if (govTbody) {
+        govTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:12px;">🔍 Menghubungi 8 basis data resmi Republik Indonesia untuk target "${targetTitle}"...</td></tr>`;
+        apiPost('/api/gov', {
+          query: targetTitle,
+          location: masterDossier.address !== 'Indonesia / Asia' ? masterDossier.address : '',
+          phone: masterDossier.phone !== '-' ? masterDossier.phone : '',
+          email: masterDossier.email !== '-' ? masterDossier.email : ''
+        }).then(res => {
+          if (res && res.valid && res.registries) {
+            window._lastGovRegistries = res.registries;
+
+            if (res.resolved_location) {
+              if (res.resolved_location.masked_nik) {
+                const elNik = document.getElementById('modal-meta-nik');
+                if (elNik) elNik.innerText = res.resolved_location.masked_nik;
+              }
+              if (res.resolved_location.masked_nim) {
+                const elNim = document.getElementById('modal-meta-nim');
+                if (elNim) elNim.innerText = res.resolved_location.masked_nim;
+              }
+            }
+
+            govTbody.innerHTML = res.registries.map((r, rIdx) => {
+              const isNotFound = r.status_badge.includes('404') || r.status_badge.includes('TIDAK') || r.status_badge.includes('NIR');
+              const statusPill = `<span class="badge-tag" style="background:${isNotFound ? '#f3f4f6' : '#e0f2fe'}; color:${isNotFound ? '#6b7280' : (r.status_color || '#0369a1')}; border:1px solid #ccc; font-weight:bold; font-size:11px; display:inline-block;">${r.status_icon || '🛡️'} ${r.status_badge || 'TERDATA'}</span>`;
+              
+              const fieldBadges = (r.ekstraksi_data && r.ekstraksi_data.length > 0)
+                ? r.ekstraksi_data.map(d => `<div style="font-size:11px; margin-bottom:2px;"><b>${d.label}:</b> <span style="color:#000080;">${d.nilai}</span></div>`).join('')
+                : '<span style="color:#888; font-size:11px;">-</span>';
+
+              const findingsDisplay = (!isNotFound && r.temuan_ringkas && r.temuan_ringkas !== '-')
+                ? `<strong>${r.temuan_ringkas}</strong>`
+                : '<span style="color:#888; font-size:11px;">-</span>';
+
+              return `
+                <tr>
+                  <td>
+                    <b>${r.nama_layanan}</b><br>
+                    <span style="font-size:11px; color:#555;">${r.instansi}</span>
+                  </td>
+                  <td>${statusPill}</td>
+                  <td style="font-size:11.5px; line-height:1.45; color:#111;">
+                    ${findingsDisplay}
+                  </td>
+                  <td style="font-size:11px; background:#fafafa; border-left:1px solid #eee;">
+                    ${fieldBadges}
+                  </td>
+                  <td style="text-align:center; white-space:nowrap;">
+                    ${!isNotFound && r.ekstraksi_data && r.ekstraksi_data.length > 0 ? `
+                      <button class="btn btn-primary btn-preview-sheet" data-regidx="${rIdx}" style="padding:3px 9px !important; font-size:11.5px; font-weight:bold;">
+                        📄 Buka Lembar Berkas
+                      </button>
+                    ` : '<span style="color:#888; font-size:11px;">Nihil Berkas</span>'}
+                  </td>
+                </tr>
+              `;
+            }).join('');
+
+            // Attach listeners to preview sheet buttons
+            govTbody.querySelectorAll('.btn-preview-sheet').forEach(b => {
+              b.addEventListener('click', () => {
+                const idx = parseInt(b.getAttribute('data-regidx'), 10);
+                const reg = window._lastGovRegistries[idx];
+                if (reg) showInAppSheet(reg, targetTitle);
+              });
+            });
+
+          } else {
+            govTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#c00;">Gagal memuat registri RI.</td></tr>`;
+          }
+        }).catch(err => {
+          govTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#c00;">Gagal mengontak server API registri RI.</td></tr>`;
+        });
+      }
+
+      modal.classList.add('open');
+    }
+
+    function closeDossierModal() {
+      playSound('click');
+      const modal = document.getElementById('dossier-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    // ============================================================
+    // REAL-TIME SSE STREAMING CONTROLLER
+    // ============================================================
+    let activeEventSource = null;
+
+    function startRealtimeRecon(params) {
+      let name = '';
+      let location = '';
+      let address = '';
+      let phone = '';
+      let email = '';
+
+      if (typeof params === 'string') {
+        name = params.trim();
+      } else if (typeof params === 'object' && params !== null) {
+        name = (params.name || '').trim();
+        location = (params.location || '').trim();
+        address = (params.address || '').trim();
+        phone = (params.phone || '').trim();
+        email = (params.email || '').trim();
+      }
+
+      const mainQuery = name || phone || email || location || address;
+      if (!mainQuery) return alert('Masukkan setidaknya salah satu parameter: Nama, Lokasi, Alamat, No HP, atau Email!');
+
+      playSound('click');
+
+      if (activeEventSource) {
+        activeEventSource.close();
+      }
+
+      // Reset master profile cards grid
+      window._profileCardsList = [];
+      const cardsGrid = document.getElementById('master-profile-cards-grid');
+      if (cardsGrid) {
+        cardsGrid.innerHTML = '<div id="profile-cards-empty-state" style="grid-column: 1 / -1; text-align:center; padding:40px 10px; color:#666;">Sedang mencari data daring...</div>';
+      }
+      const cardsBadge = document.getElementById('profile-card-total-badge');
+      if (cardsBadge) cardsBadge.innerText = '0 Profil Daring';
+
+      const fullAddress = location ? `${location}${address ? ' (' + address + ')' : ''}` : (address || 'Indonesia / Asia');
+
+      masterDossier = {
+        query: mainQuery,
+        name: name || (phone ? `Target HP: ${phone}` : (email ? `Target Email: ${email}` : mainQuery)),
+        phone: phone || (mainQuery.startsWith('08') || mainQuery.startsWith('+62') ? mainQuery : '-'),
+        carrier: '-',
+        address: fullAddress,
+        email: email || (mainQuery.includes('@') ? mainQuery : '-'),
+        registries: '-',
+        records: []
+      };
+
+      graph.clear();
+      document.getElementById('stream-status-bar').style.display = 'block';
+      document.getElementById('stream-status-text').innerText = 'Menambang data secara real-time via SSE & SQL Archive...';
+
+      // Cek Arsip SQLite Database terlebih dahulu
+      fetch(`/api/cached?query=${encodeURIComponent(mainQuery)}`)
+        .then(r => r.json())
+        .then(cacheRes => {
+          if (cacheRes && cacheRes.found && cacheRes.record) {
+            const cached = cacheRes.record;
+            const statusEl = document.getElementById('stream-status-text');
+            if (statusEl) {
+              statusEl.innerText = `💽 Cache SQL Ditemukan (${cached.updated_at || 'Arsip'}). Memuat data cepat...`;
+            }
+            if (Array.isArray(cached.candidates) && cached.candidates.length > 0) {
+              cached.candidates.forEach(cand => {
+                addProfileCard({
+                  name: cand.nama,
+                  id_number: cand.nim,
+                  org_location: `${cand.nama_pt} ${cand.sinkatan_pt ? '(' + cand.sinkatan_pt + ')' : ''}`,
+                  role_or_prodi: cand.nama_prodi,
+                  source: 'SQLite DB (PDDikti Arsip)',
+                  status: 'HTTP 200 OK',
+                  icon: '🎓',
+                  url: `https://pddikti.kemdiktisaintek.go.id/data_mahasiswa?keyword=${encodeURIComponent(cand.nim)}`
+                });
+              });
+            }
+            if (Array.isArray(cached.positive_findings) && cached.positive_findings.length > 0) {
+              cached.positive_findings.forEach(f => {
+                addPositiveDossierRow(f);
+              });
+            }
+          }
+        })
+        .catch(() => {});
+      const strTbody = document.getElementById('stream-entities-tbody'); if (strTbody) strTbody.innerHTML = '';
+      const termInit = document.getElementById('spiderfoot-terminal'); if (termInit) termInit.innerHTML = `<span style="color:#888;">[${new Date().toLocaleTimeString()}]</span> <span style="color:#00ffff;">=== INISIASI PENAMBANGAN REAL-TIME UNTUK '${mainQuery}' ===</span><br>`;
+      renderMasterDossierTable();
+
+      let nodeCount = 0;
+      let edgeCount = 0;
+
+      const urlParams = new URLSearchParams();
+      if (name) urlParams.append('query', name);
+      else if (mainQuery) urlParams.append('query', mainQuery);
+      if (location) urlParams.append('location', location);
+      if (address) urlParams.append('address', address);
+      if (phone) urlParams.append('phone', phone);
+      if (email) urlParams.append('email', email);
+
+      activeEventSource = new EventSource(`/api/stream?${urlParams.toString()}`);
+
+      activeEventSource.addEventListener('log', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          appendSpiderfootLog(data);
+        } catch (err) {}
+      });
+
+      activeEventSource.addEventListener('candidate_profile', (e) => {
+        try {
+          const cand = JSON.parse(e.data);
+          addProfileCard({
+            name: cand.nama,
+            id_number: cand.nim,
+            org_location: `${cand.nama_pt} ${cand.sinkatan_pt ? '(' + cand.sinkatan_pt + ')' : ''}`,
+            role_or_prodi: cand.nama_prodi,
+            source: 'PDDikti Kemdiktisaintek (Live)',
+            status: 'HTTP 200 OK',
+            icon: '🎓',
+            url: `https://pddikti.kemdiktisaintek.go.id/data_mahasiswa?keyword=${encodeURIComponent(cand.nim)}`
+          });
+        } catch (err) {}
+      });
+
+      activeEventSource.addEventListener('stream_item', (e) => {
+        try {
+          const item = JSON.parse(e.data);
+          if (item && item.found) {
+            addProfileCard({
+              name: masterDossier.name,
+              id_number: item.platform,
+              org_location: item.region || 'Global / Indonesia',
+              role_or_prodi: `Kategori: ${item.category} | Akun Terverifikasi`,
+              source: `Sherlock-${item.platform}`,
+              status: 'HTTP 200 OK',
+              icon: '👤',
+              url: item.profile_url
+            });
+          }
+        } catch (err) {}
+      });
+
+      activeEventSource.addEventListener('graph_node', (e) => {
+        try {
+          const node = JSON.parse(e.data);
+          graph.addNode(node);
+          nodeCount++;
+          document.getElementById('stream-node-count').innerText = nodeCount;
+          playSound('hit');
+
+          // Update dossier demographics if found
+          if (node.type === 'phone') {
+            masterDossier.phone = node.label;
+            masterDossier.carrier = node.details || 'Carrier Asia';
+          } else if (node.type === 'geo') {
+            masterDossier.address = node.label;
+          } else if (node.type === 'email') {
+            masterDossier.email = node.label;
+          } else if (node.type === 'gov') {
+            masterDossier.registries = 'Terdaftar di Basis Data RI';
+          } else if (node.type === 'nik') {
+            const elNik = document.getElementById('modal-meta-nik');
+            if (elNik) elNik.innerText = node.label.replace('NIK: ', '').trim();
+          }
+
+          masterDossier.records.push({
+            id: node.id,
+            name: masterDossier.name,
+            phone: masterDossier.phone,
+            address: masterDossier.address,
+            label: node.label,
+            type: node.type,
+            icon: node.icon || '📌',
+            source: node.type === 'social' ? 'Sherlock' : (node.type === 'phone' ? 'Telco/HLR' : (node.type === 'gov' ? 'Gov Registry' : (node.type === 'email' ? 'Epieos' : 'SpiderFoot'))),
+            status_badge: node.status_badge || '',
+            temuan_ringkas: node.temuan_ringkas || '',
+            ekstraksi_data: node.ekstraksi_data || [],
+            details: node.details || '',
+            url: node.url || null
+          });
+          renderMasterDossierTable();
+
+          // Also append to feed summary table
+          const tbody = document.getElementById('stream-entities-tbody');
+          if (tbody) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><span class="badge-tag badge-info">${node.icon} ${node.type}</span></td>
+              <td><strong>${node.label}</strong><br><small style="color:#555;">${node.details || ''}</small></td>
+              <td>${node.url ? `<a href="${node.url}" target="_blank" class="btn" style="padding:1px 6px !important;">🌐 Buka</a>` : '-'}</td>
+            `;
+            tbody.appendChild(tr);
+          }
+        } catch (err) {}
+      });
+
+      activeEventSource.addEventListener('graph_edge', (e) => {
+        try {
+          const edge = JSON.parse(e.data);
+          graph.addEdge(edge);
+          edgeCount++;
+          document.getElementById('stream-edge-count').innerText = edgeCount;
+        } catch (err) {}
+      });
+
+      activeEventSource.addEventListener('stream_item', (e) => {
+        try {
+          const item = JSON.parse(e.data);
+          if (item.found) {
+            playSound('hit');
+            masterDossier.records.push({
+              id: `soc_${item.platform}_${Date.now()}`,
+              name: masterDossier.name,
+              phone: masterDossier.phone,
+              address: masterDossier.address,
+              label: `${item.platform} Profile`,
+              type: item.category || 'Media Sosial',
+              icon: '👤',
+              source: `Sherlock / ${item.platform}`,
+              details: `Akun Terdaftar: ${item.profile_url}`,
+              url: item.profile_url
+            });
+            renderMasterDossierTable();
+          }
+        } catch (err) {}
+      });
+
+      activeEventSource.addEventListener('done', (e) => {
+        playSound('success');
+        document.getElementById('stream-status-text').innerText = 'Penyelidikan Real-Time Selesai!';
+        appendSpiderfootLog({ level: 'SUCCESS', source: 'SYS', message: 'Seluruh thread investigasi selesai mengekstrak data.' });
+        if (activeEventSource) {
+          activeEventSource.close();
+          activeEventSource = null;
+        }
+      });
+
+      activeEventSource.addEventListener('error', (e) => {
+        if (activeEventSource) {
+          activeEventSource.close();
+          activeEventSource = null;
+        }
+        document.getElementById('stream-status-text').innerText = 'Stream selesai atau koneksi tertutup.';
+      });
+    }
+
+    // Navigasi & Setup Halaman Tunggal (OSINT & Security Log SQLite)
+    const pageMeta = {
+      'page-dashboard': { title: 'Pusat Penyelidikan Intelijen & Dossier (Maltego OSINT)', icon: '🎯' },
+      'page-logs': { title: 'Log Keamanan, Error WAF & Basis Data SQL (SQLite)', icon: '🛡️' }
+    };
+
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+
+      const navInvest = document.getElementById('nav-btn-investigation');
+      const navLogs = document.getElementById('nav-btn-logs');
+      if (navInvest && navLogs) {
+        if (pageId === 'page-dashboard') {
+          navInvest.style.background = '#e0e0e0';
+          navInvest.style.border = '1px inset #888';
+          navInvest.style.color = '#00007c';
+          navLogs.style.background = 'transparent';
+          navLogs.style.border = 'none';
+          navLogs.style.color = '#000';
+        } else if (pageId === 'page-logs') {
+          navLogs.style.background = '#e0e0e0';
+          navLogs.style.border = '1px inset #888';
+          navLogs.style.color = '#00007c';
+          navInvest.style.background = 'transparent';
+          navInvest.style.border = 'none';
+          navInvest.style.color = '#000';
+          loadSecurityLogs();
+        }
+      }
+
+      const meta = pageMeta[pageId] || { title: 'MY-OSINT 95', icon: '🕵️' };
+      const winTitle = document.getElementById('window-title');
+      const winIcon = document.getElementById('window-icon');
+      const taskTitle = document.getElementById('taskbar-title');
+      const taskIcon = document.getElementById('taskbar-icon');
+      if (winTitle) winTitle.innerText = meta.title;
+      if (winIcon) winIcon.innerText = meta.icon;
+      if (taskTitle) taskTitle.innerText = meta.title;
+      if (taskIcon) taskIcon.innerText = meta.icon;
+
+      const startMenu = document.getElementById('start-menu');
+      if (startMenu) startMenu.classList.remove('open');
+      const startBtn = document.getElementById('start-btn');
+      if (startBtn) startBtn.classList.remove('active');
+
+      if (pageId === 'page-dashboard') {
+        setTimeout(() => graph.resize(), 50);
+      }
+    }
+
+    // ============================================================
+    // LOG KEAMANAN & SQLITE LOG CONTROLLER
+    // ============================================================
+    let cachedLogsData = [];
+
+    async function loadSecurityLogs(filterLevel = 'ALL') {
+      const tbody = document.getElementById('security-logs-tbody');
+      if (!tbody) return;
+
+      try {
+        const resp = await fetch(`/api/logs?level=${encodeURIComponent(filterLevel)}&limit=150`);
+        const res = await resp.json();
+        if (res && res.valid) {
+          cachedLogsData = res.logs || [];
+
+          // Update metric stats
+          const statLogCount = document.getElementById('stat-log-count');
+          const statWafCount = document.getElementById('stat-waf-count');
+          const statErrorCount = document.getElementById('stat-error-count');
+          if (statLogCount) statLogCount.innerText = `${res.total_stored || cachedLogsData.length} Entri`;
+
+          let wafCount = 0;
+          let errorCount = 0;
+          cachedLogsData.forEach(l => {
+            if (l.level === 'SECURITY_ALERT' || (l.message && l.message.includes('403'))) wafCount++;
+            if (l.level === 'ERROR' || l.level === 'WARN') errorCount++;
+          });
+          if (statWafCount) statWafCount.innerText = `${wafCount} Terdeteksi`;
+          if (statErrorCount) statErrorCount.innerText = `${errorCount} Event`;
+
+          if (cachedLogsData.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="5" style="text-align:center; padding:35px 10px; color:#666;">
+                  Belum ada log tercatat di basis data SQLite untuk filter ini.
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = cachedLogsData.map(log => {
+            let levelBadge = '';
+            if (log.level === 'SECURITY_ALERT') {
+              levelBadge = '<span class="badge-tag badge-danger" style="background:#b91c1c; color:#fff; font-weight:bold;">🚨 SECURITY_ALERT</span>';
+            } else if (log.level === 'ERROR') {
+              levelBadge = '<span class="badge-tag badge-danger">❌ ERROR</span>';
+            } else if (log.level === 'WARN') {
+              levelBadge = '<span class="badge-tag badge-warning">⚠️ WARN</span>';
+            } else if (log.level === 'AUDIT') {
+              levelBadge = '<span class="badge-tag badge-info">📋 AUDIT</span>';
+            } else {
+              levelBadge = `<span class="badge-tag badge-secondary">ℹ️ ${log.level}</span>`;
+            }
+
+            let detailStr = '';
+            if (typeof log.details === 'object' && log.details !== null) {
+              detailStr = `<code style="font-size:11px; color:#333; word-break:break-all;">${JSON.stringify(log.details)}</code>`;
+            } else if (log.details) {
+              detailStr = `<span style="font-size:11.5px; color:#444;">${log.details}</span>`;
+            } else {
+              detailStr = '<span style="color:#888;">-</span>';
+            }
+
+            return `
+              <tr>
+                <td style="font-size:11px; font-family:monospace; color:#333;">
+                  #${log.id || '-'} <br><small style="color:#777;">${(log.timestamp || '').slice(0, 19).replace('T', ' ')}</small>
+                </td>
+                <td>${levelBadge}</td>
+                <td><strong style="color:#000080; font-size:11.5px;">${log.component || 'SYS'}</strong></td>
+                <td style="font-size:12px; font-weight:500; color:#111; line-height:1.4;">${log.message || '-'}</td>
+                <td style="background:#fafafa; border-left:1px solid #ddd;">${detailStr}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:red; padding:20px; text-align:center;">Gagal memuat log dari server SQLite: ${err.message}</td></tr>`;
+      }
+    }
+
+    async function clearSecurityLogs() {
+      if (!confirm('Apakah Anda yakin ingin mengosongkan seluruh riwayat log keamanan di database SQLite?')) return;
+      playSound('click');
+      try {
+        const resp = await fetch('/api/logs/clear', { method: 'POST' });
+        const res = await resp.json();
+        if (res && res.valid) {
+          playSound('success');
+          alert('Basis data log keamanan berhasil dikosongkan.');
+          loadSecurityLogs();
+        }
+      } catch (e) {
+        alert('Gagal membersihkan log: ' + e.message);
+      }
+    }
+
+    function exportSecurityLogs() {
+      if (!cachedLogsData || cachedLogsData.length === 0) {
+        return alert('Tidak ada data log untuk diekspor!');
+      }
+      playSound('success');
+      const blob = new Blob([JSON.stringify(cachedLogsData, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `OSINT_SECURITY_LOGS_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    }
+
+    setInterval(() => {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      const clockEl = document.getElementById('clock');
+      if (clockEl) clockEl.innerText = `${h}:${m}:${s}`;
+    }, 1000);
+
+    function initApp() {
+      graph.init('maltego-canvas');
+
+      // Top menubar page navigation
+      document.getElementById('nav-btn-investigation')?.addEventListener('click', () => {
+        playSound('click');
+        switchPage('page-dashboard');
+      });
+
+      document.getElementById('nav-btn-logs')?.addEventListener('click', () => {
+        playSound('click');
+        switchPage('page-logs');
+      });
+
+      // Start menu items
+      document.querySelectorAll('.start-item[data-page]').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          playSound('click');
+          const page = item.getAttribute('data-page');
+          if (page) switchPage(page);
+        });
+      });
+
+      document.getElementById('start-btn')?.addEventListener('click', (e) => {
+        playSound('click');
+        const sm = document.getElementById('start-menu');
+        const isOpen = sm?.classList.toggle('open');
+        e.target.classList.toggle('active', isOpen);
+      });
+
+      // View Mode Toggle (Cards vs Table)
+      const tabBtnCards = document.getElementById('tab-btn-cards');
+      const tabBtnTable = document.getElementById('tab-btn-table');
+      const viewCards = document.getElementById('view-profile-cards');
+      const viewTable = document.getElementById('view-dossier-table');
+
+      if (tabBtnCards && tabBtnTable && viewCards && viewTable) {
+        tabBtnCards.addEventListener('click', () => {
+          playSound('click');
+          tabBtnCards.classList.add('active');
+          tabBtnTable.classList.remove('active');
+          viewCards.style.display = 'flex';
+          viewTable.style.display = 'none';
+        });
+
+        tabBtnTable.addEventListener('click', () => {
+          playSound('click');
+          tabBtnTable.classList.add('active');
+          tabBtnCards.classList.remove('active');
+          viewCards.style.display = 'none';
+          viewTable.style.display = 'flex';
+          renderMasterDossierTable();
+        });
+      }
+
+      // Modal Dialog Close Listeners
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      const btnCloseModalBottom = document.getElementById('btn-close-modal-bottom');
+      if (btnCloseModal) btnCloseModal.addEventListener('click', closeDossierModal);
+      if (btnCloseModalBottom) btnCloseModalBottom.addEventListener('click', closeDossierModal);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDossierModal();
+      });
+
+      // Print & Export Dossier
+      const btnPrint = document.getElementById('btn-print-dossier');
+      const modalPrint = document.getElementById('modal-menu-print');
+      if (btnPrint) btnPrint.addEventListener('click', () => window.print());
+      if (modalPrint) modalPrint.addEventListener('click', () => window.print());
+
+      const btnExportJson = document.getElementById('btn-export-dossier-json');
+      const modalExport = document.getElementById('modal-menu-export');
+      const exportDossierFn = () => {
+        playSound('success');
+        const blob = new Blob([JSON.stringify(masterDossier, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `DOSSIER_${(masterDossier.name || 'TARGET').replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+      };
+      if (btnExportJson) btnExportJson.addEventListener('click', exportDossierFn);
+      if (modalExport) modalExport.addEventListener('click', exportDossierFn);
+
+      // Real-time stream triggers (Multi-Parameter Recon)
+      document.getElementById('btn-start-stream')?.addEventListener('click', () => {
+        const name = (document.getElementById('realtime-name')?.value || '').trim();
+        const location = (document.getElementById('realtime-location')?.value || '').trim();
+        const address = (document.getElementById('realtime-address')?.value || '').trim();
+        const phone = (document.getElementById('realtime-phone')?.value || '').trim();
+        const email = (document.getElementById('realtime-email')?.value || '').trim();
+
+        startRealtimeRecon({ name, location, address, phone, email });
+      });
+
+      document.getElementById('btn-sample-specific')?.addEventListener('click', () => {
+        const elName = document.getElementById('realtime-name');
+        const elLoc = document.getElementById('realtime-location');
+        const elAddr = document.getElementById('realtime-address');
+        const elPhone = document.getElementById('realtime-phone');
+        const elEmail = document.getElementById('realtime-email');
+
+        if (elName) elName.value = 'Ilham Pradani';
+        if (elLoc) elLoc.value = 'Surabaya, Jawa Timur';
+        if (elAddr) elAddr.value = 'Wonokromo';
+        if (elPhone) elPhone.value = '081288889999';
+        if (elEmail) elEmail.value = 'ilham.pradani@gmail.com';
+
+        document.getElementById('btn-start-stream').click();
+      });
+
+      document.getElementById('btn-clear-target-inputs')?.addEventListener('click', () => {
+        ['realtime-name', 'realtime-location', 'realtime-address', 'realtime-phone', 'realtime-email'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        playSound('click');
+      });
+
+      ['realtime-name', 'realtime-location', 'realtime-address', 'realtime-phone', 'realtime-email'].forEach(id => {
+        document.getElementById(id)?.addEventListener('keyup', (e) => {
+          if (e.key === 'Enter') document.getElementById('btn-start-stream').click();
+        });
+      });
+
+      document.getElementById('btn-clear-canvas')?.addEventListener('click', () => {
+        graph.clear();
+        playSound('click');
+      });
+
+      document.getElementById('menu-reset-graph')?.addEventListener('click', () => {
+        graph.clear();
+        playSound('click');
+      });
+
+      // Log Page Controls
+      document.getElementById('btn-refresh-logs')?.addEventListener('click', () => {
+        playSound('click');
+        const lvl = document.getElementById('log-level-filter')?.value || 'ALL';
+        loadSecurityLogs(lvl);
+      });
+
+      document.getElementById('log-level-filter')?.addEventListener('change', (e) => {
+        playSound('click');
+        loadSecurityLogs(e.target.value);
+      });
+
+      document.getElementById('btn-clear-sql-logs')?.addEventListener('click', clearSecurityLogs);
+      document.getElementById('btn-export-logs')?.addEventListener('click', exportSecurityLogs);
+
+      // Close Sheet Listeners
+      document.getElementById('btn-close-sheet')?.addEventListener('click', () => {
+        playSound('click');
+        const sheet = document.getElementById('inapp-sheet-container');
+        if (sheet) sheet.style.display = 'none';
+      });
+
+      // Menubar Ekspor
+      document.getElementById('menu-ekspor')?.addEventListener('click', () => {
+        const report = {
+          tool: 'MY-OSINT 95 Real-Time Maltego Edition',
+          exported_at: new Date().toISOString(),
+          nodes_mapped: graph.nodes,
+          edges_mapped: graph.edges,
+          dossier: masterDossier
+        };
+        const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `MALTEGO_GRAPH_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        playSound('success');
+      });
+
+      // Load initial logs in background
+      loadSecurityLogs();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,789 @@
+/* ==========================================================================
+   ERP-MIJ & OSINT Retro Windows 90s Design System (Windows 95/98 Classic)
+   Mengacu ketat pada pedoman arsitektur di ui.md:
+   - Warna Utama: #cccccc (Silver), #00007c (Navy Titlebar), #008080 (Desktop Teal)
+   - Border 3D: 2px Outset & 2px Inset bevel
+   - Border Radius: Wajib 0px (Strictly Rectangular)
+   - Typography: 'MS Sans Serif', Tahoma, 'Segoe UI', sans-serif (Font-weight 400/500)
+   ========================================================================== */
+
+:root {
+  /* Dasar Windows 90s */
+  --color-silver: #cccccc;
+  --color-platinum: #ffffff;
+  --color-gray: #808080;
+  --color-dark-gray: #404040;
+  --color-black: #000000;
+
+  /* Latar Belakang & Titlebar */
+  --color-navy-blue: #00007c;
+  --color-navy-gradient: #0a246a;
+  --color-navy-light: #1084d0;
+  --color-desktop-teal: #008080;
+
+  /* Area Konten */
+  --color-white: #ffffff;
+
+  /* Status Badges */
+  --badge-review: #bae6fd;
+  --badge-proses: #fef08a;
+  --badge-selesai: #bbf7d0;
+  --badge-kritis: #fecaca;
+  --badge-info: #e0e7ff;
+
+  --taskbar-height: 32px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0px !important; /* Strict 0px radius sesuai ui.md */
+}
+
+body {
+  background-color: var(--color-desktop-teal);
+  color: var(--color-black);
+  font-family: 'MS Sans Serif', Tahoma, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  height: 100vh;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ==========================================================================
+   Desktop Environment & Layout
+   ========================================================================== */
+
+#desktop {
+  display: flex;
+  height: calc(100vh - var(--taskbar-height));
+  position: relative;
+  overflow: hidden;
+  padding: 4px;
+  gap: 4px;
+}
+
+/* ==========================================================================
+   Left Sidebar Navigation (Windows Explorer 95 Style)
+   ========================================================================== */
+
+#sidebar-container {
+  width: 250px;
+  min-width: 230px;
+  max-width: 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-silver);
+  border: 2px outset var(--color-platinum);
+  border-right-color: var(--color-black);
+  border-bottom-color: var(--color-black);
+  box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
+.sidebar-header {
+  background-color: var(--color-navy-blue);
+  color: var(--color-platinum);
+  height: 26px;
+  min-height: 26px;
+  padding: 2px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header h2 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-platinum);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-tree-section {
+  background-color: var(--color-white);
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  padding: 4px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.nav-tree-title {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 4px;
+  background-color: #e4e4e4;
+  border-bottom: 1px solid #c0c0c0;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 6px;
+  gap: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  color: var(--color-black);
+  text-decoration: none;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background-color: #e0e0e0;
+  border: 1px dotted var(--color-gray);
+}
+
+.nav-item.active {
+  background-color: var(--color-navy-blue);
+  color: var(--color-platinum);
+  border: 1px dotted var(--color-platinum);
+}
+
+.nav-item .icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+}
+
+.nav-item .badge {
+  margin-left: auto;
+  font-size: 9.5px;
+  padding: 1px 4px;
+  background-color: #e0e0e0;
+  color: #000000;
+  border: 1px solid #808080;
+}
+
+.nav-item.active .badge {
+  background-color: #ffffff;
+  color: #00007c;
+}
+
+.sidebar-status-box {
+  background-color: var(--color-silver);
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  padding: 6px;
+  font-size: 11px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.status-indicator-green {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #00aa00;
+  border: 1px solid #005500;
+  margin-right: 4px;
+}
+
+/* ==========================================================================
+   Main Workspace Window (Window / Modal / Dialog Card)
+   ========================================================================== */
+
+#workspace-window {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-silver);
+  border: 2px outset var(--color-platinum);
+  border-right-color: var(--color-black);
+  border-bottom-color: var(--color-black);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+  overflow: hidden;
+}
+
+.window-titlebar {
+  background-color: var(--color-navy-blue);
+  color: var(--color-platinum);
+  height: 26px;
+  min-height: 26px;
+  padding: 2px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.window-titlebar.inactive {
+  background-color: var(--color-gray);
+}
+
+.window-titlebar-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-platinum);
+}
+
+.window-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.win-btn {
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-silver);
+  color: var(--color-black);
+  border: 2px outset var(--color-platinum);
+  border-right-color: var(--color-black);
+  border-bottom-color: var(--color-black);
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.win-btn:active {
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  transform: translate(1px, 1px);
+}
+
+/* Toolbar Menu Bawah Titlebar */
+.window-menubar {
+  background-color: var(--color-silver);
+  border-bottom: 1px solid var(--color-gray);
+  padding: 3px 6px;
+  display: flex;
+  gap: 12px;
+  font-size: 11.5px;
+}
+
+.menu-item {
+  cursor: pointer;
+  padding: 1px 4px;
+}
+
+.menu-item:hover {
+  background-color: var(--color-navy-blue);
+  color: var(--color-platinum);
+}
+
+.window-content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #d4d0c8;
+}
+
+/* ==========================================================================
+   Page Views (Tab-based SPA)
+   ========================================================================== */
+
+.page-view {
+  display: none;
+}
+
+.page-view.active {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Form Controls, Inputs, & Buttons Retro
+   ========================================================================== */
+
+.group-box {
+  background: var(--color-silver);
+  border: 2px groove var(--color-platinum);
+  padding: 10px;
+  position: relative;
+  margin-top: 8px;
+}
+
+.group-box-title {
+  position: absolute;
+  top: -9px;
+  left: 10px;
+  background-color: var(--color-silver);
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #000050;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.input-row label {
+  min-width: 140px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select,
+textarea,
+.form-control {
+  background-color: var(--color-white) !important;
+  color: var(--color-black) !important;
+  border: 2px inset var(--color-black) !important;
+  border-right-color: var(--color-platinum) !important;
+  border-bottom-color: var(--color-platinum) !important;
+  border-radius: 0px !important;
+  padding: 5px 8px !important;
+  font-family: 'MS Sans Serif', Tahoma, 'Segoe UI', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 1px dotted var(--color-black) !important;
+}
+
+button, .btn {
+  background: var(--color-silver) !important;
+  color: var(--color-black) !important;
+  font-family: 'MS Sans Serif', Tahoma, 'Segoe UI', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  padding: 4px 14px !important;
+  border-radius: 0px !important;
+  border: 2px outset var(--color-platinum) !important;
+  border-right-color: var(--color-black) !important;
+  border-bottom-color: var(--color-black) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  user-select: none;
+}
+
+button:hover, .btn:hover {
+  background: #e0e0e0 !important;
+}
+
+button:active, .btn:active {
+  border: 2px inset var(--color-black) !important;
+  border-right-color: var(--color-platinum) !important;
+  border-bottom-color: var(--color-platinum) !important;
+  transform: translate(1px, 1px) !important;
+}
+
+button.btn-primary {
+  border: 2px outset #ffffff !important;
+  border-right-color: #000000 !important;
+  border-bottom-color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   Data Presentation: Excel Spreadsheet Style Tables (ui.md Spec)
+   ========================================================================== */
+
+.excel-table-container {
+  background: var(--color-white) !important;
+  border: 2px inset var(--color-black) !important;
+  border-right-color: var(--color-platinum) !important;
+  border-bottom-color: var(--color-platinum) !important;
+  border-radius: 0px !important;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.excel-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 11.5px !important;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif !important;
+}
+
+.excel-table th {
+  background: var(--color-silver) !important;
+  color: var(--color-black) !important;
+  border: 2px outset var(--color-platinum) !important;
+  border-right-color: var(--color-black) !important;
+  border-bottom-color: var(--color-black) !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  padding: 4px 8px !important;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  user-select: none;
+}
+
+.excel-table td {
+  border: 1px solid #d0d0d0 !important;
+  background-color: var(--color-white) !important;
+  color: var(--color-black) !important;
+  padding: 4px 8px !important;
+  font-weight: 400 !important;
+}
+
+.excel-table tr:hover td {
+  background-color: var(--color-navy-blue) !important;
+  color: var(--color-platinum) !important;
+}
+
+.excel-table tr:hover td a {
+  color: #ffff80 !important;
+}
+
+.excel-table td a {
+  color: #0000cc;
+  text-decoration: underline;
+}
+
+/* Status Badges */
+.badge-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  border: 1px solid #808080;
+}
+
+.badge-tag.badge-success {
+  background-color: var(--badge-selesai);
+  color: #004d1a;
+}
+
+.badge-tag.badge-warning {
+  background-color: var(--badge-proses);
+  color: #665200;
+}
+
+.badge-tag.badge-danger {
+  background-color: var(--badge-kritis);
+  color: #7f1d1d;
+}
+
+.badge-tag.badge-info {
+  background-color: var(--badge-review);
+  color: #0369a1;
+}
+
+/* ==========================================================================
+   Information Cards / KTP Details Card
+   ========================================================================== */
+
+.card-sunken {
+  background-color: var(--color-white);
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  padding: 10px;
+}
+
+.id-card-preview {
+  background: linear-gradient(135deg, #eef5ff 0%, #d8e8f8 100%);
+  border: 2px groove #a0c0e0;
+  padding: 14px;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  color: #1a202c;
+  margin-top: 8px;
+}
+
+.id-card-header {
+  border-bottom: 2px solid #000080;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.id-card-header h3 {
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #00007c;
+  text-transform: uppercase;
+}
+
+.id-card-header h4 {
+  font-size: 11px;
+  font-weight: 500;
+  color: #404040;
+}
+
+.id-card-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 6px 12px;
+  font-size: 12px;
+}
+
+.id-card-label {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.id-card-value {
+  color: #000000;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Bottom Taskbar (Windows 95 Bottom Bar)
+   ========================================================================== */
+
+#taskbar {
+  height: var(--taskbar-height);
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-silver);
+  border-top: 2px outset var(--color-platinum);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px;
+  z-index: 1000;
+  user-select: none;
+}
+
+.taskbar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.start-button {
+  height: 24px;
+  padding: 2px 8px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.start-button.active {
+  border: 2px inset var(--color-black) !important;
+  border-right-color: var(--color-platinum) !important;
+  border-bottom-color: var(--color-platinum) !important;
+  background-color: #dfdfdf !important;
+}
+
+.taskbar-divider {
+  width: 2px;
+  height: 22px;
+  border-left: 1px solid var(--color-gray);
+  border-right: 1px solid var(--color-platinum);
+  margin: 0 4px;
+}
+
+.taskbar-window-tabs {
+  display: flex;
+  gap: 3px;
+  height: 100%;
+}
+
+.task-tab {
+  height: 24px;
+  min-width: 130px;
+  max-width: 180px;
+  background-color: var(--color-silver);
+  border: 2px outset var(--color-platinum);
+  border-right-color: var(--color-black);
+  border-bottom-color: var(--color-black);
+  padding: 2px 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-tab.active {
+  background-color: #dfdfdf;
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  font-weight: 600;
+}
+
+.taskbar-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 6px;
+}
+
+.system-tray {
+  height: 24px;
+  background-color: var(--color-silver);
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.tray-icon {
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   Start Menu Popup
+   ========================================================================== */
+
+#start-menu {
+  display: none;
+  position: fixed;
+  bottom: var(--taskbar-height);
+  left: 2px;
+  width: 220px;
+  background-color: var(--color-silver);
+  border: 2px outset var(--color-platinum);
+  border-right-color: var(--color-black);
+  border-bottom-color: var(--color-black);
+  box-shadow: 2px 2px 0px 0px var(--color-black);
+  z-index: 1001;
+}
+
+#start-menu.open {
+  display: flex;
+}
+
+.start-sidebar-strip {
+  width: 26px;
+  background-color: var(--color-navy-blue);
+  color: var(--color-platinum);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 4px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.start-menu-items {
+  flex: 1;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.start-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: var(--color-black);
+  font-size: 12px;
+}
+
+.start-item:hover {
+  background-color: var(--color-navy-blue);
+  color: var(--color-platinum);
+}
+
+.start-item-divider {
+  height: 1px;
+  background-color: var(--color-gray);
+  border-bottom: 1px solid var(--color-platinum);
+  margin: 3px 0;
+}
+
+/* Progress bar retro */
+.retro-progress-container {
+  height: 18px;
+  background-color: var(--color-white);
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+  position: relative;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.retro-progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: var(--color-navy-blue);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-navy-blue),
+    var(--color-navy-blue) 10px,
+    #1084d0 10px,
+    #1084d0 14px
+  );
+  transition: width 0.3s ease;
+}
+
+/* Scrollbar retro */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #dfdfdf;
+  border: 1px solid #808080;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-silver);
+  border: 2px outset var(--color-platinum);
+  border-right-color: var(--color-black);
+  border-bottom-color: var(--color-black);
+}
+
+::-webkit-scrollbar-thumb:active {
+  border: 2px inset var(--color-black);
+  border-right-color: var(--color-platinum);
+  border-bottom-color: var(--color-platinum);
+}
